@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: brown;
+        border-radius: 5px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+      }
+      .input-group {
+        display: flex;
+        margin-bottom: 10px;
+      }
+      .input-group input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #c124c7;
+        border-radius: 5px 0 0 5px;
+        font-size: 16px;
+      }
+      .input-group button {
+        padding: 10px 20px;
+        background-color: #72087b;
+        border: none;
+        border-radius: 0 5px 5px 0;
+        color: #f0e808;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1.7px solid #ccc;
+      }
+      li span {
+        flex: 1;
+        margin-left: 10px;
+        font-size: 16px;
+      }
+      li button {
+        padding: 5px 10px;
+        background-color: #3599dc;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // Your code will go here
+    function TodoList() {
+      let [todos, setTodo] = React.useState([]);
+      let [newTodo, setNewTodo] = React.useState("");
+
+      function addTodo() {
+        setTodo([...todos, { id: Date.now(), text: newTodo, completed: false }]);
+        setNewTodo("");
+      }
+      function toggleTodo(id) {
+        setTodo(prevTodos =>
+          prevTodos.map(todo =>
+            todo.id == id ? { ...todo, completed: !todo.completed } : todo
+          )
+        );
+      }
+      function removeTodo(id) {
+        setTodo(prevTodos => prevTodos.filter(todo => todo.id !== id));
+      }
+      return (
+        <div className="container">
+          <div className="input-group">
+            <input
+              type="text"
+              value={newTodo}
+              onChange={e => setNewTodo(e.target.value)}
+              placeholder="Add new todo..."
+            />
+            <button onClick={addTodo}>Add Todo</button>
+          </div>
+
+          <ul>
+            {todos.map((todo, i) => (
+              <li key={todo.id}>
+                <input
+                  type="checkbox"
+                  checked={todo.completed}
+                  onChange={() => toggleTodo(todo.id)}
+                />
+                <span style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
+                  {todo.text}
+                </span>
+                <button onClick={() => removeTodo(todo.id)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<TodoList />);
+  </script>
+</html>
