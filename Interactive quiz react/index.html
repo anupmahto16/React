@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React Quiz App</title>
+  <style>
+    body{
+      background-color: rgb(167, 240, 215);
+      /* background-color:rgb(230, 164, 217) ; */
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function Quiz() {
+      const questions = [
+        {
+          question: "What is JSX in React?",
+          options: [
+            "A styling language",
+            "A templating engine",
+            "A syntax extension for JavaScript",
+            "A state management library"
+          ],
+          correctAnswer: "A syntax extension for JavaScript "
+        },
+        {
+          question: "What is ReactJS primarily used for?",
+          options: [
+            "Server-side scripting",
+            " Building user interfaces",
+            "Database management",
+            "Graphic design"
+          ],
+          correctAnswer: " Building user interfaces"
+        },
+        {
+          question: " What is the Virtual DOM in React used for?",
+          options: [
+            "Storing user authentication data",
+            "Efficiently updating and rendering components",
+            "Managing server-side rendering",
+            "Handling API requests"
+          ],
+          correctAnswer: "Efficiently updating and rendering components"
+        }
+      ];
+
+      const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+      const [showScore, setShowScore] = useState(false);
+      const [score, setScore] = useState(0);
+
+      const handleAnswerClick = (index, selectedOption) => {
+        const newAnswers = [...answers];
+        newAnswers[index] = selectedOption;
+        setAnswers(newAnswers);
+      };
+
+      const calculateScore = () => {
+        let newScore = 0;
+        for (let i = 0; i < questions.length; i++) {
+          if (answers[i] === questions[i].correctAnswer) {
+            newScore++;
+          }
+        }
+        setScore(newScore);
+        setShowScore(true);
+      };
+
+      const restartQuiz = () => {
+        setAnswers(Array(questions.length).fill(null));
+        setShowScore(false);
+        setScore(0);
+      };
+
+      return (
+        <div id="quiz" 
+        style={{ maxWidth: "600px",
+         margin: "50px auto", 
+         padding: "20px", 
+         backgroundColor: " olive", 
+         borderRadius: "10px",
+         boxShadow:" rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset" }}>
+          {!showScore ? (
+            <div>
+              {questions.map((question, index) => (
+                <div className="question" key={index} style={{ marginBottom: "20px" }}>
+                  <h3>{question.question}</h3>
+                  <ul style={{ listStyleType: "none", padding: "0" }}>
+                    {question.options.map((option, optionIndex) => (
+                      <li key={optionIndex} style={{ marginBottom: "10px" }}>
+                        <label>
+                          <input
+                            type="radio"
+                            name={`question${index}`}
+                            value={option}
+                            onChange={() => handleAnswerClick(index, option)}
+                          />
+                          {option}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <button onClick={calculateScore} style={{ backgroundColor: "#007bff", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "4px", cursor: "pointer" }}>Submit</button>
+            </div>
+          ) : (
+            <div style={{ marginTop: "20px" }}>
+              <h2>Your Score: {score}</h2>
+              <button onClick={restartQuiz} style={{ backgroundColor: "#007bff", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "4px", cursor: "pointer" }}>Restart Quiz</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Quiz />, document.getElementById("root"));
+  </script>
+</body>
+</html>
