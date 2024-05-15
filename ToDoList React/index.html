@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToDo List</title>
+  <style>
+    /* CSS for styling the todo items */
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 400px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+      padding: 20px;
+    }
+
+    .todo-list {
+      list-style-type: none;
+      padding: 20px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .todo-item span {
+      flex-grow: 1;
+      margin-left: 10px;
+    }
+
+    .todo-item button {
+      background-color: #ff5c5c;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .todo-item button:hover {
+      background-color: #e04c4c;
+    }
+
+    .todo-item input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    .add-todo {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .add-todo input[type="text"] {
+      flex-grow: 1;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .add-todo button {
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .add-todo button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div id="root" class="container"></div>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // ToDoList component
+    class ToDoList extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          todos: [],
+          inputValue: ''
+        };
+      }
+
+      // Function to handle input change
+      handleInputChange = (event) => {
+        this.setState({ inputValue: event.target.value });
+      }
+
+      // Function to add a new todo item
+      addTodo = () => {
+        const { inputValue } = this.state;
+        if (inputValue.trim() !== '') {
+          this.setState({
+            todos: [...this.state.todos, { text: inputValue, completed: false }],
+            inputValue: ''
+          });
+        }
+      }
+
+      // Function to delete a todo item
+      deleteTodo = (index) => {
+        const updatedTodos = [...this.state.todos];
+        updatedTodos.splice(index, 1);
+        this.setState({ todos: updatedTodos });
+      }
+
+      // Function to toggle completion status of a todo item
+      toggleComplete = (index) => {
+        const updatedTodos = [...this.state.todos];
+        updatedTodos[index].completed = !updatedTodos[index].completed;
+        this.setState({ todos: updatedTodos });
+      }
+
+      render() {
+        const { todos, inputValue } = this.state;
+        return (
+          <div>
+            <h1>ToDo List</h1>
+            <div class="add-todo">
+              <input type="text" value={inputValue} onChange={this.handleInputChange} placeholder="Add new todo..." />
+              <button onClick={this.addTodo}>Add</button>
+            </div>
+            <ul className="todo-list">
+              {todos.map((todo, index) => (
+                <li key={index} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+                  <input type="checkbox" checked={todo.completed} onChange={() => this.toggleComplete(index)} />
+                  <span>{todo.text}</span>
+                  <button onClick={() => this.deleteTodo(index)}>Delete</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+    }
+
+    // Render the ToDoList component
+    ReactDOM.render(<ToDoList />, document.getElementById('root'));
+  </script>
+</body>
+</html>

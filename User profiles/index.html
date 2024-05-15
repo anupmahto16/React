@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profiles</title>
+  <style>
+    /* CSS for styling */
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 400px;
+      background-color: greenyellow;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .user-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .user-item {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div id="root" class="container"></div>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // UserProfile component
+    function UserProfile({ user }) {
+      return (
+        <div className="user-item">
+          <h3>{user.name}</h3>
+          <p>Email: {user.email}</p>
+          <p>Phone: {user.phone}</p>
+        </div>
+      );
+    }
+
+    // UserList component
+    class UserList extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          users: [
+            { id: 1, name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
+            
+            // Add more users as needed
+          ],
+          searchTerm: ''
+        };
+      }
+
+      handleSearch = (event) => {
+        this.setState({ searchTerm: event.target.value });
+      }
+
+      render() {
+        const { users, searchTerm } = this.state;
+        const filteredUsers = users.filter(user =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        return (
+          <div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={this.handleSearch}
+              placeholder="Search by name..."
+            />
+            <ul className="user-list">
+              {filteredUsers.map(user => (
+                <li key={user.id}>
+                  <UserProfile user={user} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+    }
+
+    // Render the UserList component
+    ReactDOM.render(<UserList />, document.getElementById('root'));
+  </script>
+</body>
+</html>
